@@ -12,10 +12,17 @@ const getWindowDimension = () => {
     }
 }
 
+
+const DEFAULT_CAMERA_TOKEN = "at.co7x1rs76jmzeqbq6q6rfotr95ee5gfp-26l1k16wdo-1rdgx52-dcbgockgc";
+const DEFAULT_CAMERA_URL = "ezopen://open.ezviz.com/BA3686955/1.hd.live";
+
 function Home() {
 
-    const { token, url } = new URLSearchParams(document.location.search);
-    console.log(token + " - " + url);
+    const searchStr = new URLSearchParams(document.location.search);
+    const token = searchStr.get('token');
+    const url = searchStr.get('url');
+    console.log("Token: " + token);
+    console.log("Url: " + url);
     const [player, setPlayer] = useState(null);
     const [dimension, setDimension] = useState(getWindowDimension());
     const play = () => {
@@ -85,8 +92,8 @@ function Home() {
                 var accessToken = res.data.accessToken;
                 const ezPlayer = new EZUIKit.EZUIKitPlayer({
                     id: 'video-container',
-                    accessToken: 'at.4w1j1zaf86twsdl24p6m9nqn4fpqgqk5-6pn292h497-0eclc60-q4tdvf235',
-                    url: 'ezopen://open.ezviz.com/BA3686955/1.hd.live',
+                    accessToken: token ?? DEFAULT_CAMERA_TOKEN,
+                    url: url ?? DEFAULT_CAMERA_URL,
                     template: 'mobileLive',
                     plugin: ['talk'],
                     deocoder: "",
@@ -101,6 +108,8 @@ function Home() {
     }, [dimension.width])
 
     useEffect(() => {
+
+
         const onSizeChange = () => {
             setDimension(getWindowDimension());
         };
