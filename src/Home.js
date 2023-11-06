@@ -16,6 +16,16 @@ const getWindowDimension = () => {
 const DEFAULT_CAMERA_TOKEN = "at.co7x1rs76jmzeqbq6q6rfotr95ee5gfp-26l1k16wdo-1rdgx52-dcbgockgc";
 const DEFAULT_CAMERA_URL = "ezopen://open.ezviz.com/BA3686955/1.hd.live";
 
+const encodeBody = (json) => {
+    const formBody = []
+    for (let property in json) {
+        const encodedKey = encodeURIComponent(property);
+        const encodedValue = encodeURIComponent(json[property]);
+        formBody.push(encodedKey + "=" + encodedValue)
+    }
+    return formBody.join("&");
+}
+
 function Home() {
 
     const searchStr = new URLSearchParams(document.location.search);
@@ -86,19 +96,27 @@ function Home() {
     const dimensionHeight = dimension.width / 4 * 3;
 
     useEffect(() => {
-        fetch('https://open.ys7.com/jssdk/ezopen/demo/token')
+        fetch('https://open.ezvizlife.com/api/lapp/token/get', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+            body: encodeBody({
+                'appKey': 'bb9aa821c13944fbae1f916d0bb1307b',
+                'appSecret': '72ac899e28cd40c78697d146a19e05ae'
+            })
+        })
             .then(response => response.json())
             .then(res => {
                 var accessToken = res.data.accessToken;
+                console.log("Access token get: " + accessToken);
                 const ezPlayer = new EZUIKit.EZUIKitPlayer({
                     id: 'video-container',
-                    accessToken: token ?? DEFAULT_CAMERA_TOKEN,
+                    accessToken: accessToken ?? DEFAULT_CAMERA_TOKEN,
                     url: url ?? DEFAULT_CAMERA_URL,
-                    template: 'mobileLive',
+                    template: 'simple',
                     plugin: ['talk'],
                     deocoder: "",
                     width: dimension.width,
-                    height: (dimensionHeight > dimension.height ? dimension.height : dimensionHeight) - 50,
+                    height: dimension.height,
                     env: {
                         domain: "https://isgpopen.ezvizlife.com"
                     }
