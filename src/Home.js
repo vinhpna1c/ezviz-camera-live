@@ -31,6 +31,8 @@ function Home() {
     const searchStr = new URLSearchParams(document.location.search);
     const token = searchStr.get('token');
     const url = searchStr.get('url');
+    const qWidth=searchStr.get('width');
+    const qHeight=searchStr.get('height');
     console.log("Token: " + token);
     console.log("Url: " + url);
     const [player, setPlayer] = useState(null);
@@ -106,6 +108,14 @@ function Home() {
         })
             .then(response => response.json())
             .then(res => {
+                let vWidth=dimension.width;
+                let vHeight=dimension.height;
+                if(qWidth){
+                    vWidth= parseFloat(qWidth);
+                }
+                if(qHeight){
+                    vHeight=parseFloat(qHeight);
+                }
                 var accessToken = res.data.accessToken;
                 console.log("Access token get: " + accessToken);
                 const ezPlayer = new EZUIKit.EZUIKitPlayer({
@@ -115,8 +125,8 @@ function Home() {
                     template: 'simple',
                     plugin: ['talk'],
                     deocoder: "",
-                    width: dimension.width,
-                    height: dimension.height,
+                    width: vWidth,
+                    height: vHeight,
                     env: {
                         domain: "https://isgpopen.ezvizlife.com"
                     }
